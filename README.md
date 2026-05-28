@@ -60,7 +60,7 @@ Following my tutor "Andrew NG", since there are only 2 vectors in the model, I g
 
 Step 10:
 So I could decide that new feature is also scaler since our model looks likes fits in a straight line
-fx = w1x1 . w2x2 + b
+$$f(x) = w_1x_1 + w_2x_2 + b$$
 
 Step 11:
 I converted the target variable to be a percentage, so our model can predict the percentage and then multiply it from the max value, which will be easier to visualize
