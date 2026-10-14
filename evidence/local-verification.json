@@ -1,0 +1,544 @@
+{
+  "checks": [
+    {
+      "name": "Node native acceptance checks",
+      "command": [
+        "node",
+        "--test",
+        "backend/tests/native.test.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": "\u2714 finance separates savings, exports and costs (1.351082ms)\n\u2714 progressive tariffs and finite payback (0.616151ms)\n\u2714 energy is power times duration (0.16546ms)\n\u2714 breaker isolates dependency and single recovery probe (0.869464ms)\n\u2714 nonretryable errors do not open breaker (0.215305ms)\n\u2714 cache coalesces calls and serves bounded stale value (0.374686ms)\n\u2714 password hashing verifies secrets without storing plaintext (110.5059ms)\n\u2714 memory ownership, sessions, snapshots and cascading deletion (1.579537ms)\n\u2714 weather adapter validates units and exact preceding-hour window (0.784365ms)\n\u2139 tests 9\n\u2139 suites 0\n\u2139 pass 9\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 200.775872\n"
+    },
+    {
+      "name": "Python portable model checks",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_research_native.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": "test_prediction_and_metadata (test_research_native.ArtifactChecks.test_prediction_and_metadata) ... ok\ntest_reject_invalid_feature (test_research_native.ArtifactChecks.test_reject_invalid_feature) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "name": "JavaScript syntax: backend/eslint.config.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/eslint.config.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/server.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/server.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/app.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/app.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/tests/finance.test.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/tests/finance.test.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/tests/breaker.test.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/tests/breaker.test.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/tests/api.test.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/tests/api.test.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/tests/weather.test.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/tests/weather.test.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/tests/postgres.test.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/tests/postgres.test.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/scripts/benchmark.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/scripts/benchmark.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/scripts/migrate.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/scripts/migrate.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/lib/auth.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/lib/auth.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/lib/errors.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/lib/errors.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/domain/schemas.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/domain/schemas.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/domain/finance.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/domain/finance.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/integrations/breaker.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/integrations/breaker.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/integrations/weather.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/integrations/weather.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/integrations/ml.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/integrations/ml.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/integrations/cache.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/integrations/cache.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/integrations/openweather.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/integrations/openweather.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/integrations/http.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/integrations/http.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/controllers/auth.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/controllers/auth.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/controllers/sites.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/controllers/sites.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/repositories/postgres.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/repositories/postgres.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/repositories/memory.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/repositories/memory.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/src/services/planning.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/src/services/planning.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: backend/tests/native.test.cjs",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/backend/tests/native.test.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/vite.config.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/vite.config.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/eslint.config.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/eslint.config.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/babel.config.cjs",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/babel.config.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/jest.config.cjs",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/jest.config.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/src/lib/format.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/src/lib/format.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/src/lib/api.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/src/lib/api.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: frontend/src/lib/format.test.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/frontend/src/lib/format.test.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: scripts/ssm-parameters.cjs",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/scripts/ssm-parameters.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: scripts/smoke.cjs",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/scripts/smoke.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: scripts/install.cjs",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/scripts/install.cjs"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: deploy/spa-rewrite.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/deploy/spa-rewrite.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "JavaScript syntax: benchmarks/api.k6.js",
+      "command": [
+        "node",
+        "--check",
+        "/workspace/scratch/9246f7a8d4dd/SunYieldML-implementation/benchmarks/api.k6.js"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    },
+    {
+      "name": "Python syntax: ml-service/tests/test_api.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/tests/test_research_native.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/tests/test_physics.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/scripts/train.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/app/__init__.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/app/main.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/app/research.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: ml-service/app/physics.py",
+      "passed": true
+    },
+    {
+      "name": "Python syntax: scripts/verify_local.py",
+      "passed": true
+    },
+    {
+      "name": "YAML parse: .github/workflows/ci.yml",
+      "passed": true
+    },
+    {
+      "name": "YAML parse: .github/workflows/cd.yml",
+      "passed": true
+    },
+    {
+      "name": "YAML parse: compose.yaml",
+      "passed": true
+    },
+    {
+      "name": "YAML parse: deploy/compose.production.yaml",
+      "passed": true
+    },
+    {
+      "name": "JSON parse: frontend/package.json",
+      "passed": true
+    },
+    {
+      "name": "JSON parse: backend/package.json",
+      "passed": true
+    },
+    {
+      "name": "JSON parse: ml-service/models/reference_model.json",
+      "passed": true
+    },
+    {
+      "name": "JSON parse: deploy/oidc-trust.example.json",
+      "passed": true
+    },
+    {
+      "name": "JSON parse: deploy/deploy-policy.example.json",
+      "passed": true
+    },
+    {
+      "name": "Release shell syntax",
+      "command": [
+        "bash",
+        "-n",
+        "deploy/release.sh"
+      ],
+      "exitCode": 0,
+      "passed": true,
+      "output": ""
+    }
+  ],
+  "passed": true,
+  "notExecuted": [
+    "Jest and Testing Library",
+    "React/Vite build and JSX compilation",
+    "FastAPI/pvlib pytest suites",
+    "PostgreSQL integration",
+    "Docker image builds and compose health checks",
+    "Live weather requests",
+    "k6 HTTP load test",
+    "GitHub Actions and AWS deployment"
+  ]
+}

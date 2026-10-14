@@ -1,0 +1,70 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: node scripts/install.cjs frontend
+      - run: npm run lint && npm run test:ci && npm run build
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        with: {name: frontend-dist, path: frontend/dist}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: frontend-coverage, path: frontend/coverage, if-no-files-found: warn}
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: {POSTGRES_USER: sunyield, POSTGRES_PASSWORD: test-only, POSTGRES_DB: sunyield_test}
+        ports: ['5432:5432']
+        options: --health-cmd='pg_isready -U sunyield -d sunyield_test' --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DATABASE_URL: postgres://sunyield:test-only@localhost:5432/sunyield_test
+      RUN_PG_TESTS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: node scripts/install.cjs backend
+      - run: npm run migrate && npm run lint && npm run test:ci
+        working-directory: backend
+      - run: node --test backend/tests/native.test.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: backend-coverage, path: backend/coverage, if-no-files-found: warn}
+  ml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install -r requirements-dev.txt
+        working-directory: ml-service
+      - run: python -m pytest tests -q
+        working-directory: ml-service
+  container-check:
+    needs: [frontend, backend, ml]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose --env-file .env.example build
+      - run: docker compose --env-file .env.example up -d --wait backend frontend
+      - run: curl --fail --retry 5 --retry-delay 2 http://localhost:8080/ && curl --fail http://localhost:3001/health/ready
+      - run: docker compose --env-file .env.example logs
+        if: failure()
+      - run: docker compose --env-file .env.example down --volumes
+        if: always()

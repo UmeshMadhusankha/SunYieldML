@@ -1,0 +1,68 @@
+{
+  "version": "plant-linear-chrono-v1",
+  "mean": [
+    0.23860082080952558,
+    6.947145196916926
+  ],
+  "scale": [
+    0.3100144922926039,
+    9.284635056135475
+  ],
+  "coefficients": [
+    0.34190988940188666,
+    -0.04189098070808573
+  ],
+  "intercept": 0.23651032510615014,
+  "trainingPeakSourceUnits": 1325.0096590454546,
+  "evaluation": {
+    "split": "chronological: final seven calendar days held out",
+    "trainRows": 2487,
+    "testRows": 670,
+    "cutoff": "2020-06-11T00:00:00",
+    "allHours": {
+      "r2": 0.9918740160375118,
+      "maeFraction": 0.01494065562252724,
+      "maePercentagePoints": 1.4940655622527241,
+      "rmsePercentagePoints": 2.424927702423789,
+      "maeSourceUnits": 19.79651301232037
+    },
+    "daytime": {
+      "r2": 0.9770347705654933,
+      "maeFraction": 0.026497733736016396,
+      "maePercentagePoints": 2.6497733736016396,
+      "rmsePercentagePoints": 3.5086763870918274,
+      "maeSourceUnits": 35.10975314303632
+    },
+    "irradiationOnlyBaseline": {
+      "r2": 0.9904594907655455,
+      "maeFraction": 0.01688609876189889,
+      "maePercentagePoints": 1.688609876189889,
+      "rmsePercentagePoints": 2.627523401191308,
+      "maeSourceUnits": 22.37424396311152
+    },
+    "maeReductionVsBaselinePct": 11.520974541267448
+  },
+  "target": "Mean AC_POWER over available inverters at each timestamp divided by the training-set observed peak.",
+  "featureUnits": {
+    "irradiation": "Native dataset sensor units; calibration not verified. Do not pass W/m\u00b2 directly.",
+    "ambientC": "Degrees Celsius"
+  },
+  "dataset": {
+    "source": "https://github.com/UmeshMadhusankha/SunYieldML",
+    "commit": "9d12923eb5d24257efdcbc20e179cff1d0e3d458",
+    "sha256": {
+      "Plant_1_Generation_Data.csv": "7573be47df0bcd19d203e8ed1504faf0ab805ecb9a8fd44bb5de0d886c698750",
+      "Plant_1_Weather_Sensor_Data.csv": "91325041328745c288cb809aebd8b1b59cde54284500902ead1fb393499d6806"
+    },
+    "mergedRows": 3157,
+    "start": "2020-05-15T00:00:00",
+    "end": "2020-06-17T23:45:00"
+  },
+  "limitations": [
+    "Single plant, 34 days, no external-site validation.",
+    "Mean of available inverters can vary with missing telemetry.",
+    "The observed training peak is not a nameplate capacity or a household capacity factor.",
+    "Chronological holdout reduces temporal leakage; this is not evidence of long-term generalization.",
+    "No clipping during evaluation; inference returns the raw regression output."
+  ]
+}

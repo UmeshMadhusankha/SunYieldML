@@ -1,89 +1,117 @@
-# SunYieldML
-ML model predicts the solar power that can be generated according to the sunlight and the air temperature. The UI is there to feed that data to the model and Express JS to handle backend logic
+# SunYield ML
 
-A) Problem:
-People blindly invest on solar panels, without calculating how much will they profitable according to his solar panel installment location and wasting money or not taking desired advantage, or sometimes over generating power!
+A React, Express/Node and PostgreSQL solar-planning application with a private Python inference service. Accounts manage multiple household, business or installer properties; each property has several immutable proposals and saved estimates. Monthly generation, installation quotes, bill savings, export income and simple payback are shown separately.
 
-B) Identified Solution:
-Developing a platform to calculate how much electricity could be generated using the solar power, by specifying the specific location of installment. 
-In that way, people could find out how much value they can make up from the investment he is going to do
+This is a new implementation alongside your original research repository, reviewed at commit `9d12923eb5d24257efdcbc20e179cff1d0e3d458`. The original notebook is not overwritten. Start with the full project archive; the separate FE and BE archives use the same folder names and can be extracted into one root.
 
-C) How did i implement the solution
-Step 01: 
-I searched for a good dataset and found a Kaggle dataset on a Solar Power House consisting with several generators. And identified the best suiting algorithm is Linear Regression since this is a number prediction.
+## What is implemented
 
-Step 02:
-I observed the dataset by printing out few lines. There were fields like AC_POWER, DC_POWER, AMBIENT_TEMPERATURE, MODULE_TEMPERATURE, IRRADIATION
+- React workspace: registration/login, profile choice, multiple properties, editing/deletion, proposals, monthly charts, 24-hour forecast, saved comparison table and JSON report export.
+- Express MVC: controllers validate transport input; services coordinate use cases; domain modules calculate finances; repositories own persistence; provider adapters isolate external systems.
+- PostgreSQL ownership constraints, parameterized SQL, persistent server-side sessions, scrypt password hashes, HttpOnly cookies, CSRF tokens, origin checks, validation and authentication rate limits.
+- NASA POWER climatology for planning; Open-Meteo hourly forecasts; optional independent OpenWeather Solar 2.0 + One Call 3.0 fallback; per-provider circuit breakers, abort timeouts, bounded/coalesced cache and explicitly labeled stale resources.
+- Capacity-aware PV planning and forecasting using pvlib. The original plant regression is preserved as a separately evaluated research artifact, with portable preprocessing and coefficients.
+- Jest/Testing Library/Supertest suites, PostgreSQL integration tests, Python tests, Docker Compose, GitHub Actions CI and opt-in AWS CD, load-test scripts and real local evidence.
 
-Step 03:
-I eliminated few fields like DC_POWER. since I did not focus on calculating the power coversion rate losses as it is almost similar for all solar panels
+## Run locally with Docker
 
-<img width="652" height="416" alt="image" src="https://github.com/user-attachments/assets/7e2e42c2-a629-41d0-9317-800f00b05059" />
+Requirements: Docker Engine with Compose v2 and access to npm, PyPI and container registries.
 
-Step 04:
-I plotted each vectors - AMBIENT_TEMPERATURE, MODULE_TEMPERATURE, IRRADIATION against the AC_POWER individually
+```bash
+cp .env.example .env
+# Replace POSTGRES_PASSWORD and ML_SERVICE_KEY with different random hex strings.
+# Keep DATA_MODE=demo initially. APP_ORIGIN=http://localhost:8080.
+docker compose up --build -d --wait
+```
 
-<img width="704" height="459" alt="image" src="https://github.com/user-attachments/assets/18664403-bbd3-4043-86b1-35cd395fcc32" />
-<img width="747" height="463" alt="image" src="https://github.com/user-attachments/assets/099cf446-d890-4889-9aed-086568cfc5bb" />
-<img width="755" height="461" alt="image" src="https://github.com/user-attachments/assets/b821da01-e86d-48e0-ba69-5509634a177d" />
+Open `http://localhost:8080` and create an account. There is no embedded default account or production password. Demo mode uses synthetic weather, while PostgreSQL still persists account/site data. `docker compose down` preserves the database volume; `down --volumes` deletes it.
 
-Step 05:
-From there I identified that:
-  Irradiation is having a linear relationship with the Power
-  Air temperature(Ambient) doesn't show a mathmatical relationship directly
-  Panel temperature(Module) shows a relationship closer to a linear relationship with the Power
+## Run FE and BE separately
 
-Step 06:
-Since Irradiation showed a linear relationship, I took it as x1.
-I decided to remove the module temperature from the model eventhough it shows a relationship, if we cannot measure as a user when we ask our model to do a prediction, it is going to be a fail
-Identified eventhough there is no direct relationship is shown with the air temperature, there should be a relationship since it affects the panel temperature and its performance in a hardware level as well
+Use Node 24 and Python 3.12. In three terminals:
 
-Step 07:
-Upon further thinking, and after graphing, I realized that even the "Air temperature" is a factor, it won't be a factor on its own. Because if there are no sunlight, there will be no power generated if the air temperature is high
+```bash
+# Terminal 1: private inference service
+cd ml-service
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
 
-<img width="672" height="461" alt="image" src="https://github.com/user-attachments/assets/5f86ccc1-038c-47eb-af26-edf472bf455d" />
+```bash
+# Terminal 2: API (temporary demo storage)
+cd backend
+cp .env.example .env
+npm install
+npm run dev
+```
 
-Step 08:
-Then I needed to further dive deep to find what's going on with the Air temperature, when there is sunlight. So I plotted 3d graph with air temperature, sunlight and power
+```bash
+# Terminal 3: React (Vite proxies /api to localhost:3001)
+cd frontend
+npm install
+npm run dev
+```
 
-<img width="964" height="418" alt="image" src="https://github.com/user-attachments/assets/d4699cb4-b0de-4109-8bfe-84e4e8ad04c1" />
+Open `http://localhost:5173`. The default `STORE=memory` is deliberately temporary and clearly identified in the UI. To persist: start PostgreSQL, set `STORE=postgres` and `DATABASE_URL`, then run `npm run migrate` before starting the API. Production rejects memory storage.
 
-Step 09:
-Since there is a hardware constraint that is said the panel temperature affects the performance of power generation from a solar panel, and sunlight + air temperature contributes to that, and also because of air temperature on its own do nothing to the power generation, but when combined with sunlight there is a tend;
-I did feature engineering, engineering a new feature by multiplying sunlight with air temperature
+No npm lockfiles are included because registry downloads were denied in the coding environment. Initial installation generates them. **Commit both package-lock.json files before releasing**; the install helper switches to `npm ci` when locks exist, and CD refuses publication without committed locks. Until then, first-run dependency resolution is not fully reproducible.
 
-Step 10:
-Following my tutor "Andrew NG", since there are only 2 vectors in the model, I graphed those 2 features in the model 
-(x1 = sunlight and x2 = engineered feature)
+## Live resources
 
-<img width="648" height="453" alt="image" src="https://github.com/user-attachments/assets/05a3fb3f-3d90-4139-9b9a-263482b2302a" />
+Set `DATA_MODE=live` and restart the API. New estimates then use NASA climatology and forecasts use Open-Meteo. Demo estimates remain immutable and labeled synthetic. Public Open-Meteo access is intended for permitted noncommercial use; for a commercial service, arrange licensed access, set `OPEN_METEO_URL` and `OPEN_METEO_KEY`, and review both providers' current terms and attribution requirements. Sources are shown with each report.
 
-Step 10:
-So I could decide that new feature is also scaler since our model looks likes fits in a straight line
-$$f(x) = w_1x_1 + w_2x_2 + b$$
+`OPENWEATHER_KEY` enables fallback only when primary hourly forecasting fails. The key needs access to **both Solar Irradiance 2.0 and One Call 3.0**; a basic free current-weather key is insufficient. This is optional and not assumed to be free. Planning climatology uses NASA only; bounded stale cache is its failure fallback. Neither provider failure silently substitutes synthetic data.
 
-Step 11:
-I converted the target variable to be a percentage, so our model can predict the percentage and then multiply it from the max value, which will be easier to visualize
+Circuit defaults: 5 consecutive transient failures, 30-second cooldown, one half-open probe. HTTP 429/5xx and transport/invalid-data errors count; nontransient 4xx do not. Forecast windows are exact UTC hours and are cached by location and window. Cache: 30 minutes fresh, at most 2 hours from fetch for stale service, 1,000 entries per process. For rolling forecasts, a new hour is a new key and may have no stale fallback. In-flight misses coalesce. No cross-process shared cache or distributed rate limiter is claimed.
 
-<img width="695" height="258" alt="image" src="https://github.com/user-attachments/assets/0335919e-d561-4de2-a5f5-20b0dc3d570a" />
+## Tests and evidence
 
-Step 12:
-Then before the final few steps, I took few time to feature scaling, so our model won't accidentally diverge or take much time to converge
+```bash
+cd backend
+npm run lint
+npm test
+npm run test:ci
+node --test tests/native.test.cjs
+# Against a disposable PostgreSQL database after migrate:
+RUN_PG_TESTS=1 npm run test:integration
+```
 
-<img width="710" height="494" alt="image" src="https://github.com/user-attachments/assets/bb6220ec-9b00-4fd5-8962-d8937f1c146d" />
+```bash
+cd frontend
+npm run lint
+npm run test:ci
+npm run build
+```
 
-<img width="635" height="445" alt="image" src="https://github.com/user-attachments/assets/f79e0643-c57a-4540-a7fc-a4b4eefa3723" />
+```bash
+cd ml-service
+python -m pytest tests -q
+python -m unittest discover -s tests -p test_research_native.py -v
+```
 
-Step 13:
-Finally I imported skicit learn libraries to implement the linear regression!
-which gave me values for w1,w2,b
+[Verification](docs/VERIFICATION.md) records exactly what ran here. Nine native Node checks and two Python artifact checks passed. Training and the controlled cache benchmark ran. **Jest, frontend build, pvlib/FastAPI tests, PostgreSQL/Docker integration, live provider calls and cloud deployment have not run here**, because the required dependencies/services were unavailable. Coverage thresholds are CI requirements, not measured coverage results. CI is supplied but has not been executed on your GitHub account.
 
-<img width="673" height="387" alt="image" src="https://github.com/user-attachments/assets/82d55423-00dc-4363-9165-24755cd94d33" />
+Read [architecture](docs/ARCHITECTURE.md), [API contract](docs/API.md), [testing/TDD and CV evidence](docs/TESTING_AND_METRICS.md), and [AWS hosting/deployment](docs/HOSTING.md). The same guides are included in the BE archive. Hosted deployment is not performed by this delivery.
 
-Step 14:
-Before wrapping up and end the MLOPS loop, I checked the performance of the model, which were outstanding!
+## Model boundaries
 
-<img width="693" height="514" alt="image" src="https://github.com/user-attachments/assets/f199f6ed-fa5a-4ab5-b273-51a082565640" />
+The original target averages available inverters and divides by an observed power maximum. It is **not** a transferable household capacity factor. Its native irradiation unit is unverified. Passing weather W/m² directly into that model would be misleading. The application therefore uses capacity-aware physics for new installations, and presents plant-model metrics on a research page.
 
-<img width="707" height="489" alt="image" src="https://github.com/user-attachments/assets/232eba9a-3315-468c-bb76-1b56bbe2f638" />
+The shipped research model uses a chronological seven-day holdout with training-only preprocessing and target normalization: 2,487 training timestamps and 670 test timestamps. R² `0.991874`; MAE `1.494066` percentage points of normalized plant output; daytime-proxy MAE `2.649773` pp. Against an irradiation-only linear baseline on the same holdout, MAE was `11.520975%` lower. These are local dataset results, not new-site accuracy or long-term performance.
 
+To retrain with your original CSVs:
+
+```bash
+cd ml-service
+python scripts/train.py --data-dir /path/to/SunYieldML/data --output models/reference_model.json
+```
+
+No pickle is loaded in serving. JSON includes preprocessing, coefficients, input/target contracts, data hashes, split and evaluation. Training dependencies are separate from runtime dependencies.
+
+Monthly physics uses a representative day scaled to daily GHI climatology, a fixed array and explicit losses. Forecasts integrate hourly average kW over hours. This is preliminary screening, not an engineered installation guarantee. Costs and rates are user-entered examples; eligibility for export compensation must be checked with the relevant provider.
+
+## Scope and next work
+
+Installer accounts currently organize their own clients' properties; there is no shared organization membership or cross-account invitation workflow. Add organization memberships and role permissions when collaboration is required. Other useful extensions are measured meter-data import for hourly self consumption, historical hourly yield validation, financing/degradation scenarios, authenticated PDF quotations, and anomaly detection on installed-system telemetry. Keep these behind tested contracts rather than claiming them as shipped features.

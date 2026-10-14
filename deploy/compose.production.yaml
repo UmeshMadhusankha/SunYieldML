@@ -1,0 +1,68 @@
+name: sunyield
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sunyield
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: sunyield
+    volumes: ["db-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sunyield -d sunyield"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 256m
+  ml:
+    image: ${ML_IMAGE:?Set an immutable ML image digest}
+    restart: unless-stopped
+    environment:
+      ML_SERVICE_KEY: ${ML_SERVICE_KEY:?Set ML_SERVICE_KEY}
+    mem_limit: 512m
+  migrate:
+    image: ${BACKEND_IMAGE:?Set an immutable API image digest}
+    environment:
+      DATABASE_URL: postgres://sunyield:${POSTGRES_PASSWORD}@db:5432/sunyield
+    command: ["node", "scripts/migrate.js"]
+    depends_on:
+      db: {condition: service_healthy}
+  backend:
+    image: ${BACKEND_IMAGE}
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      STORE: postgres
+      DATA_MODE: ${DATA_MODE:-demo}
+      APP_ORIGIN: ${APP_ORIGIN:?Set the CloudFront viewer origin}
+      DATABASE_URL: postgres://sunyield:${POSTGRES_PASSWORD}@db:5432/sunyield
+      ML_URL: http://ml:8000
+      ML_SERVICE_KEY: ${ML_SERVICE_KEY}
+      ORIGIN_SECRET: ${ORIGIN_SECRET:?Set an origin secret}
+      TRUST_PROXY: '1'
+      OPEN_METEO_KEY: ${OPEN_METEO_KEY:-}
+      OPEN_METEO_URL: ${OPEN_METEO_URL:-https://api.open-meteo.com/v1/forecast}
+      OPENWEATHER_KEY: ${OPENWEATHER_KEY:-}
+    ports: ["127.0.0.1:3001:3001"]
+    depends_on:
+      ml: {condition: service_healthy}
+      migrate: {condition: service_completed_successfully}
+    mem_limit: 256m
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    environment:
+      API_HOST: ${API_HOST:?Set a domain resolving to this EC2 instance}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    ports: ["80:80", "443:443"]
+    depends_on:
+      backend: {condition: service_healthy}
+    mem_limit: 128m
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

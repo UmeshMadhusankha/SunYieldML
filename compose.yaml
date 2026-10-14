@@ -1,0 +1,50 @@
+name: sunyield
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: sunyield
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in root .env}
+      POSTGRES_DB: sunyield
+    volumes: ["db-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sunyield -d sunyield"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  ml:
+    build: ./ml-service
+    environment:
+      ML_SERVICE_KEY: ${ML_SERVICE_KEY:?Set ML_SERVICE_KEY}
+  migrate:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://sunyield:${POSTGRES_PASSWORD}@db:5432/sunyield
+    command: ["node", "scripts/migrate.js"]
+    depends_on:
+      db: {condition: service_healthy}
+  backend:
+    build: ./backend
+    environment:
+      PORT: 3001
+      NODE_ENV: development
+      STORE: postgres
+      DATA_MODE: ${DATA_MODE:-demo}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      DATABASE_URL: postgres://sunyield:${POSTGRES_PASSWORD}@db:5432/sunyield
+      ML_URL: http://ml:8000
+      ML_SERVICE_KEY: ${ML_SERVICE_KEY}
+      OPENWEATHER_KEY: ${OPENWEATHER_KEY:-}
+      OPEN_METEO_KEY: ${OPEN_METEO_KEY:-}
+      OPEN_METEO_URL: ${OPEN_METEO_URL:-https://api.open-meteo.com/v1/forecast}
+    ports: ["127.0.0.1:3001:3001"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      ml: {condition: service_healthy}
+  frontend:
+    build: ./frontend
+    ports: ["8080:8080"]
+    depends_on:
+      backend: {condition: service_healthy}
+volumes:
+  db-data:

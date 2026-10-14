@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-10-14T04:24:47.349Z",
+  "kind": "sequential controlled dependency/cache microbenchmark",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "fixtureLatencyMs": 20,
+  "baseline": {
+    "samples": 100,
+    "upstreamCalls": 100,
+    "p50Ms": 20.17240400000003,
+    "p95Ms": 20.278552999999988,
+    "totalMs": 2018.9833910000027
+  },
+  "cached": {
+    "samples": 100,
+    "upstreamCalls": 1,
+    "p50Ms": 0.0003609999998843705,
+    "p95Ms": 0.01189799999974639,
+    "totalMs": 20.741639999998824
+  },
+  "upstreamCallReductionPct": 99,
+  "limitations": [
+    "One cache key; no HTTP, authentication, database or ML work.",
+    "Artificial dependency latency; not a production latency or scalability result.",
+    "Cached samples include one cold miss; freshness TTL does not expire during the run."
+  ]
+}

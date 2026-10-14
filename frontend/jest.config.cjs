@@ -1,0 +1,1 @@
+module.exports={testEnvironment:'jsdom',setupFilesAfterEnv:['<rootDir>/src/test/setup.js'],transform:{'^.+\\.[jt]sx?$':'babel-jest'},moduleNameMapper:{'\\.css$':'<rootDir>/src/test/styleMock.cjs'},collectCoverageFrom:['src/**/*.{js,jsx}','!src/main.jsx','!src/test/**'],coverageThreshold:{'./src/lib/format.js':{lines:100}}};

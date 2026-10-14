@@ -1,0 +1,10 @@
+const {z}=require('zod');
+const finite=z.number().finite();
+const nonnegative=finite.min(0);
+const timezone=z.string().max(80).refine(value=>{try{new Intl.DateTimeFormat('en',{timeZone:value});return true;}catch{return false;}},'Unknown IANA timezone');
+const profile=z.enum(['household','business','installer']);
+const registration=z.object({name:z.string().trim().min(2).max(100),email:z.string().email().max(254).transform(v=>v.toLowerCase()),password:z.string().min(12).max(128),accountType:profile.default('household')}).strict();
+const login=z.object({email:z.string().email().max(254).transform(v=>v.toLowerCase()),password:z.string().min(1).max(128)}).strict();
+const site=z.object({name:z.string().trim().min(2).max(100),type:profile,latitude:finite.min(-89).max(89),longitude:finite.min(-180).max(180),timezone,roofAreaM2:finite.positive().max(1000000)}).strict();
+const scenario=z.object({name:z.string().trim().min(2).max(100),capacityKwp:finite.positive().max(100000),inverterKw:finite.positive().max(100000),tiltDeg:finite.min(0).max(90),azimuthDeg:finite.min(0).max(360),lossPct:finite.min(0).max(99),shadingPct:finite.min(0).max(100),monthlyConsumptionKwh:nonnegative.max(100000000),selfConsumptionPct:finite.min(0).max(100),importRate:nonnegative.max(1000000),exportRate:nonnegative.max(1000000),monthlyOperatingCost:nonnegative.max(1000000000),panelCost:nonnegative.max(1000000000000),inverterCost:nonnegative.max(1000000000000),installationCost:nonnegative.max(1000000000000),currency:z.string().regex(/^[A-Z]{3}$/),tariffKind:z.enum(['flat','tiered']).default('flat'),importBlocks:z.array(z.object({upToKwh:finite.positive().nullable(),rate:nonnegative}).strict()).min(1).max(30).optional()}).strict();
+module.exports={registration,login,site,scenario,z};

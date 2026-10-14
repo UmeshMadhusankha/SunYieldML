@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+coverage/
+dist/
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+evidence/api-load*.json
+deploy/release.env
+deploy/previous-release.env

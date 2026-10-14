@@ -1,0 +1,16 @@
+require('dotenv').config();
+const {createApp}=require('./app');
+const {MemoryRepository}=require('./repositories/memory');
+const {PostgresRepository}=require('./repositories/postgres');
+const {WeatherService}=require('./integrations/weather');
+const {MlClient}=require('./integrations/ml');
+const config={production:process.env.NODE_ENV==='production',store:process.env.STORE||'memory',dataMode:process.env.DATA_MODE||'demo',appOrigin:process.env.APP_ORIGIN||'http://localhost:5173',trustProxy:process.env.TRUST_PROXY==='1'?1:false,logRequests:true};
+config.originSecret=process.env.ORIGIN_SECRET||'';
+if(!['memory','postgres'].includes(config.store)||!['demo','live'].includes(config.dataMode))throw Error('Invalid STORE or DATA_MODE');
+if(config.production&&config.store!=='postgres')throw Error('Production requires PostgreSQL');
+if(config.store==='postgres'&&!process.env.DATABASE_URL)throw Error('DATABASE_URL is required');
+const repo=config.store==='postgres'?new PostgresRepository(process.env.DATABASE_URL):new MemoryRepository();
+const weather=new WeatherService({dataMode:config.dataMode,openMeteoKey:process.env.OPEN_METEO_KEY,openWeatherKey:process.env.OPENWEATHER_KEY,openMeteoUrl:process.env.OPEN_METEO_URL||undefined});
+const ml=new MlClient(process.env.ML_URL||'http://127.0.0.1:8000',process.env.ML_SERVICE_KEY||'');
+const server=createApp({repo,weather,ml,config}).listen(Number(process.env.PORT||3001),()=>console.log(`SunYield API ready on ${process.env.PORT||3001}; ${config.store}/${config.dataMode}`));
+for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>{server.close(async()=>{if(repo.close)await repo.close();process.exit(0);});setTimeout(()=>process.exit(1),10000).unref();});
