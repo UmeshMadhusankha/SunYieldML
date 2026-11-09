@@ -58,7 +58,7 @@ class Features(BaseModel):
     irradiation:float=Field(ge=0,le=1.5,allow_inf_nan=False)
     ambientC:float=Field(ge=0,le=60,allow_inf_nan=False)
 
-@app.get('/health',dependencies=[Depends(authorize)])
+@app.get('/health')
 def health():
     return {'status':'ready','modelVersion':model.artifact['version']}
 
